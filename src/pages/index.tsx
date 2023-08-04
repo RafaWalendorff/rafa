@@ -1,33 +1,12 @@
-import { useEffect, useState } from "react";
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
 import {
-  doc,
-  collection,
-  getDocs,
-  query,
-  deleteDoc,
-  addDoc,
-} from "firebase/firestore";
+  createItemFirestore,
+  deleteItemFirestore,
+  fetchFromFirestore,
+} from "@/lib/firebase";
+import { Item } from "@/types/firebase.types";
+import { useEffect, useState } from "react";
 
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_APIKEY,
-  authDomain: process.env.NEXT_PUBLIC_AUTHDOMAIN,
-  projectId: process.env.NEXT_PUBLIC_PROJECTID,
-  storageBucket: process.env.NEXT_PUBLIC_STORAGEBUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_MESSAGINGSENDERID,
-  appId: process.env.NEXT_PUBLIC_APPID,
-  measurementId: process.env.NEXT_PUBLIC_MEASUREMENTID,
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-type Item = {
-  id: string;
-  name: string;
-  price: string;
-};
+const collectionName = "lista";
 
 export default function Home() {
   const [valores, setValores] = useState<Item[]>([]);
@@ -43,32 +22,18 @@ export default function Home() {
   };
 
   const fetchList = async () => {
-    const q = query(collection(db, "lista"));
-    const lista: Item[] = [];
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      lista.push({
-        id: doc.id,
-        name: data.name,
-        price: data.price,
-      });
-    });
+    const lista = await fetchFromFirestore(collectionName);
     setValores(lista);
   };
 
-  const postItem = async ({ name, price }: { name: string; price: number }) => {
-    await addDoc(collection(db, "lista"), {
-      name,
-      price,
-      createAt: new Date(),
-    });
+  const postItem = async (props: { name: string; price: number }) => {
+    await createItemFirestore({ ...props, collectionName });
 
     fetchList();
   };
 
-  const deleteItem = async (name: string) => {
-    await deleteDoc(doc(db, "lista", name));
+  const deleteItem = async (id: string) => {
+    await deleteItemFirestore({ id, collectionName });
     fetchList();
   };
 
