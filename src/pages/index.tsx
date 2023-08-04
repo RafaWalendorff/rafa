@@ -11,13 +11,13 @@ import {
 } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDwvmrsPOLX03BjdpRjCy0bt-h0j04xnTw",
-  authDomain: "rafa-19399.firebaseapp.com",
-  projectId: "rafa-19399",
-  storageBucket: "rafa-19399.appspot.com",
-  messagingSenderId: "574977056792",
-  appId: "1:574977056792:web:8498900bca167071e2e36d",
-  measurementId: "G-CRDTFEV172",
+  apiKey: process.env.NEXT_PUBLIC_APIKEY,
+  authDomain: process.env.NEXT_PUBLIC_AUTHDOMAIN,
+  projectId: process.env.NEXT_PUBLIC_PROJECTID,
+  storageBucket: process.env.NEXT_PUBLIC_STORAGEBUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_MESSAGINGSENDERID,
+  appId: process.env.NEXT_PUBLIC_APPID,
+  measurementId: process.env.NEXT_PUBLIC_MEASUREMENTID,
 };
 
 const app = initializeApp(firebaseConfig);
